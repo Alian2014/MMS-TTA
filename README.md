@@ -27,7 +27,7 @@ Please follow [Datasets](docs/DATASETS.md) to download the OOD and Cross-Domain 
 
 ## <a name="training"></a>  Running
 
-Run the following script to run BoostAdapter:
+Run the following script to run MMS-TTA:
 ```
 bash scripts/run.sh $GPU $EXP_NAME
 ```
