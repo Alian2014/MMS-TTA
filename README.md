@@ -5,7 +5,7 @@
 
 
 
-Guohao Jiang, Zhiheng Ma, Chenhao Ding, SongLin Dong, Qiang Wang, Yuhang He, and Yihong Gong
+Guohao Jiang, Chenhao Ding, SongLin Dong, Zhiheng Ma, Qiang Wang, Yuhang He, and Yihong Gong
 
 > **Abstract:**  Test-Time Adaptation (TTA), particularly the training-free paradigm, has garnered widespread attention due to its significant advantages in addressing test-time distribution shifts in Vision-Language Models. However, existing training-free approaches are often constrained by the inherent limitations caused by an over-reliance on a single textual or visual modality, resulting in suboptimal performance and robustness. To address this issue, we propose a novel \textbf{training-free dynamic multimodal synergy strategy}. First, to extract textual modality features with enhanced robustness, we construct a cache-based, hierarchical retrieval-augmented TTA paradigm. Building upon this, we introduce a negative-entropy-driven dynamic synergy mechanism that adaptively fuses the optimized textual modality, the visual modality, and the original CLIP modality. This integration ultimately yields a predictive distribution characterized by both high robustness and high confidence. Our approach significantly enhances class discriminability while maintaining exceptional robustness during testing. Extensive experiments across multiple benchmarks demonstrate that the proposed method consistently outperforms state-of-the-art approaches in both performance and efficiency.
 
