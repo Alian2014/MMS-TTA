@@ -1,4 +1,4 @@
-# BoostAdapter: Improving Test-Time Adaptation via Regional Bootstrapping
+# Beyond Unimodal Reliance: Multimodal Synergy for Training-Free Test-Time Adaptation
 
 ### [[Paper](https://arxiv.org/abs/XXXXXXX)] 
 
