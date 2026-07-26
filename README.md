@@ -52,4 +52,4 @@ This project is released under the [MIT license](LICENSE).
 
 ## Acknowledgement
 
-This code is based on [RATTA](https://github.com/kaist-dmlab/RA-TTA) and [BoostAdapter](https://github.com/taolinzhang/BoostAdapter). Thanks for their awesome work.
+This code is based on [RA-TTA](https://github.com/kaist-dmlab/RA-TTA) and [BoostAdapter](https://github.com/taolinzhang/BoostAdapter). Thanks for their awesome work.
