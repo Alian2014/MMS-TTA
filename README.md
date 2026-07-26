@@ -29,12 +29,12 @@ Please follow [Datasets](docs/DATASETS.md) to download the OOD and Cross-Domain 
 
 Run the following script to run MMS-TTA:
 ```
-bash scripts/run.sh $GPU $EXP_NAME
+Coming soon
 ```
 
 For example, you can run the a demo with the following command:  
 ```
-bash scripts/run.sh 0 demo
+Coming soon
 ```
 
 
@@ -52,4 +52,4 @@ This project is released under the [MIT license](LICENSE).
 
 ## Acknowledgement
 
-This code is based on [TDA](https://github.com/kdiAAA/TDA) and [BoostAdapter](https://github.com/taolinzhang/BoostAdapter). Thanks for their awesome work.
+This code is based on [RATTA](https://github.com/kaist-dmlab/RA-TTA) and [BoostAdapter](https://github.com/taolinzhang/BoostAdapter). Thanks for their awesome work.
