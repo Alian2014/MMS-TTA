@@ -1,137 +1,90 @@
-# Beyond Unimodal Reliance: Multimodal Synergy for Training-Free Test-Time Adaptation (ACM MM 2026)
+# Beyond Unimodal Reliance: Multimodal Synergy for Training-Free Test-Time Adaptation
 
- official PyTorch implementation of the ACM MM 2026 paper: **"Beyond Unimodal Reliance: Multimodal Synergy for Training-Free Test-Time Adaptation"**[cite: 1].
+[![Paper](https://img.shields.io/badge/Paper-PDF-red.svg)](Link_to_your_paper)
+[![Conference](https://img.shields.io/badge/Conference-ACM_MM_2026-blue.svg)](Link_to_conference)
+[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-> **Authors:** Guohao Jiang, Zhiheng Ma, Chenhao Ding, SongLin Dong, Yuhang He, Qiang Wang, Yihong Gong[cite: 1]  
-> **Institutions:** Xi'an Jiaotong University, Shenzhen University of Advanced Technology, The University of Tokyo[cite: 1]  
-> 📜 [Paper](https://arxiv.org/abs/xxx) | 🌐 [Project Page](https://your-project-page.github.io)
+> **Authors:** Guohao Jiang, Zhiheng Ma, Chenhao Ding, SongLin Dong, Qiang Wang, Yuhang He, Yihong Gong
+> 
+> **Institutions:** Xi'an Jiaotong University, Shenzhen University of Advanced Technology, The University of Tokyo
 
----
+This is the official PyTorch implementation of the ACM MM 2026 paper [**Beyond Unimodal Reliance: Multimodal Synergy for Training-Free Test-Time Adaptation**](Link_to_your_paper). 
 
-## 💡 Overview
+## Abstract
+Test-Time Adaptation (TTA), particularly the training-free paradigm, has garnered widespread attention due to its significant advantages in addressing test-time distribution shifts in Vision-Language Models. However, existing training-free approaches are often constrained by the inherent limitations caused by an over-reliance on a single textual or visual modality, resulting in suboptimal performance and robustness. To address this issue, we propose a novel training-free dynamic multimodal synergy strategy (**MMS-TTA**).
 
-Existing training-free Test-Time Adaptation (TTA) methods for Vision-Language Models (VLMs) often suffer from unimodal reliance[cite: 1]:
-1. **Vision-reliant methods** produce overly dispersed predictions with **low confidence**[cite: 1].
-2. **Text-reliant methods** yield pathologically concentrated predictions leading to **blind overconfidence**[cite: 1].
+## Highlights
 
-To overcome these unimodal bottlenecks, we propose **MMS-TTA**, a training-free dynamic Multimodal Synergy framework that achieves a synergy of **high robustness and high confidence**[cite: 1]:
-* **Hierarchical Retrieval-Augmented (H-RA) Module:** A coarse-to-fine mechanism using Optimal Transport (OT) to reshape textual representations and suppress semantic noise, mitigating blind overconfidence[cite: 1].
-* **Dynamic Multimodal Synergy (MMS):** An instance-level cross-modal consensus anchor (grounded in Jensen-Shannon & KL divergence) that dynamically fuses zero-shot CLIP, cache-based visual, and H-RA textual modalities without backpropagation[cite: 1].
+*   **Hierarchical Retrieval-Augmented (RA) Paradigm:** We construct a cache-based, hierarchical RA mechanism to extract textual modality features with enhanced robustness, effectively alleviating the blind confidence commonly found in text-reliant methods.
+*   **Dynamic Multimodal Synergy:** We introduce a negative-entropy-driven dynamic synergy mechanism that adaptively fuses the optimized textual modality, the visual modality, and the original CLIP modality to yield a highly robust and confident predictive distribution.
+*   **State-of-the-Art Performance and Efficiency:** MMS-TTA consistently outperforms state-of-the-art approaches across diverse Out-of-Distribution (OOD) and cross-domain tasks. It operates efficiently, requiring only 1.2 GB of memory with an inference speed of 10.77 fps on a single NVIDIA 3090 GPU.
 
-![MMS-TTA Overview](assets/framework.png) <!-- Ensure you upload your Figure 2 here -->
+## Methodology
 
----
+Our framework overcomes the performance ceiling imposed by unimodal reliance through two core designs:
 
-## 🚀 Main Results
+### 1. Training-Free Textual Adaptation via Hierarchical RA
+To address the pathological concentration issue in text-only methods, we leverage an LLM-generated description pool and employ a coarse-to-fine Hierarchical RA paradigm. This structured matching mechanism filters out noisy semantic features and quantifies cross-modal alignment via an Optimal Transport (OT) distance.
 
-### Cross-Dataset Benchmark (ViT-B/16 & ResNet50)
-MMS-TTA outperforms state-of-the-art training-free and optimization-based TTA methods across 9 benchmark datasets[cite: 1]:
+### 2. Dynamic Multimodal Synergy and Fusion
+We intelligently aggregate the original zero-shot prediction ($P_{clip}$), the cache-based visual prediction ($P_{vis}$), and the hierarchical RA textual prediction ($P_{txt}$). We establish an Instance-level Consensus Anchor grounded in Jensen-Shannon divergence:
 
-| Backbone | Method | Type | Avg Acc (%) | Aircraft | Caltech | Flowers | Pets | SUN397 | UCF101 | Cars | DTD | Food101 |
-| :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| **ViT-B/16** | CLIP (Zero-Shot) | - | 66.16 | 23.22 | 93.55 | 66.99 | 86.92 | 65.63 | 65.16 | 66.11 | 45.04 | 82.86 |
-| | TPT (NeurIPS'22) | Grad | 67.62 | 24.78 | 94.16 | 68.98 | 87.79 | 65.50 | 68.04 | 66.87 | 47.75 | 84.67 |
-| | BoostAdapter (NeurIPS'24) | Training-Free | 69.51 | 27.45 | 94.77 | 71.66 | 89.51 | 68.09 | 71.93 | 69.30 | 45.69 | **87.17** |
-| | **MMS-TTA (Ours)** | **Training-Free** | **73.00** | **30.81** | **95.13** | **78.36** | **92.45** | **70.44** | **73.59** | **70.08** | **58.92** | 87.24 |
-| **ResNet-50**| BoostAdapter (NeurIPS'24) | Training-Free | 63.44 | 18.93 | 88.48 | 68.25 | 85.75 | 62.83 | 64.42 | 59.67 | 43.85 | **78.78** |
-| | **MMS-TTA (Ours)** | **Training-Free** | **65.88** | **21.90** | **89.53** | **71.46** | **87.84** | **64.94** | **66.22** | **60.83** | **52.42** | 77.75 |
+$$P_{cons}=\frac{1}{3}(P_{clip}+P_{vis}+P_{txt})$$
 
-### Efficiency vs. Performance
-MMS-TTA achieves state-of-the-art accuracy while maintaining a lightweight computational footprint (~10.77 FPS on an NVIDIA RTX 3090, requiring only 1.2 GB VRAM)[cite: 1].
+This consistency-aware design adaptively rewards multimodal consensus and suppresses isolated overconfidence. The framework dynamically heavily penalizes the weights of modalities exhibiting high uncertainty and severe consensus divergence, mitigating unimodal predictive biases without requiring iterative optimization.
 
----
+## Main Results
 
-## 🛠️ Installation
+MMS-TTA demonstrates superior robustness and accuracy compared to 12 state-of-the-art baselines. 
 
+### Cross-Dataset Benchmark (ViT-B/16 Backbone)
+*Performance evaluated across 9 diverse image classification datasets.*
+
+| Method | Aircraft | Caltech101 | DTD | Flowers102 | OxfordPets | SUN397 | UCF101 | **Average** |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| CLIP | 23.22 | 93.55 | 45.04 | 66.99 | 86.92 | 65.63 | 65.16 | 66.16 |
+| TPT | 24.78 | 94.16 | 47.75 | 68.98 | 87.79 | 65.50 | 68.04 | 67.62 |
+| DPE | 28.95 | 94.81 | 54.20 | 75.07 | 91.14 | 70.07 | 70.44 | 70.91 |
+| BoostAdapter| 27.45 | 94.77 | 45.69 | 71.66 | 89.51 | 68.09 | 71.93 | 69.51 |
+| **MMS-TTA (Ours)**| **30.81** | **95.13** | **58.92** | **78.36** | **92.45** | **70.44** | **73.59** | **73.00** |
+
+### Out-of-Distribution (OOD) Benchmark (ViT-B/16 Backbone)
+*Performance evaluated on ImageNet variants under severe distribution shifts.*
+
+| Method | ImageNet-A | ImageNet-R | ImageNet-Sketch | ImageNet-V2 | **Average** |
+| :--- | :---: | :---: | :---: | :---: | :---: |
+| CLIP | 49.89 | 77.65 | 48.24 | 61.88 | 59.42 |
+| DiffTPT | 55.68 | 75.00 | 46.80 | 65.10 | 60.65 |
+| CuPL | 50.23 | 78.16 | 49.60 | 63.00 | 60.25 |
+| BoostAdapter| 60.11 | 80.24 | 50.54 | 64.67 | 63.89 |
+| **MMS-TTA (Ours)**| **64.31** | **81.15** | **52.41** | **65.96** | **65.96** |
+
+## Quick Start
+
+### 1. Requirements
+Ensure the necessary environment dependencies are installed prior to execution.
 ```bash
-# Clone repository
-git clone [https://github.com/Alian2014/MMS-TTA.git](https://github.com/Alian2014/MMS-TTA.git)
+git clone [https://github.com/YourUsername/MMS-TTA.git](https://github.com/YourUsername/MMS-TTA.git)
 cd MMS-TTA
-
-# Create conda environment
-conda create -n mmstta python=3.9 -y
-conda activate mmstta
-
-# Install PyTorch and dependencies
-pip install torch torchvision
 pip install -r requirements.txt
 ```
 
----
+### 2. Data Preparation
+Our evaluation strictly follows standard OOD and Cross-Domain TTA settings. Download the corresponding datasets (e.g., ImageNet-A, ImageNet-R, Caltech101) and organize them sequentially in the data/ directory.
 
-## 📦 Data Preparation
-
-Please download the standard TTA benchmark datasets following [TPT](https://github.com/azsh251/TPT) and place them under the `./data` directory:
-
-```text
-data/
-├── caltech101/
-├── dtd/
-├── fgvc_aircraft/
-├── flowers102/
-├── food101/
-├── imagenet/
-├── oxford_pets/
-├── stanford_cars/
-├── sun397/
-└── ucf101/
-```
-
-We also provide the pre-generated LLM descriptions in `./descriptors/`[cite: 1].
-
----
-
-## 🏃 Quick Start
-
-To run **MMS-TTA** on the Cross-Dataset benchmark using ViT-B/16[cite: 1]:
-
+### 3. Run Inference
+To evaluate MMS-TTA on a specific dataset utilizing the ViT-B/16 backbone, execute the following script:
 ```bash
-# Run on DTD dataset with ViT-B/16
-python main.py \
-    --config configs/cross_dataset.yaml \
-    --dataset dtd \
-    --arch ViT-B/16 \
-    --data_dir ./data \
-    --K_D 17 \
-    --tau_gate 0.5
+python eval.py --dataset imagenet_a --backbone ViT-B/16 --gpu 0
 ```
 
-To run across all 9 cross-dataset benchmarks[cite: 1]:
+## Citation
+If you find our work or this code repository useful for your research, please consider citing:
 ```bash
-bash scripts/run_cross_dataset.sh
-```
-
-To run on Out-of-Distribution (OOD) ImageNet benchmarks[cite: 1]:
-```bash
-bash scripts/run_ood.sh
-```
-
----
-
-## 🖼️ Visual Comparison
-
-Predictive negative entropy distributions on **OxfordPets**[cite: 1]:
-
-| BoostAdapter (Dispersed) | CuPL (Overconfident) | MMS-TTA (Calibrated & Confident) |
-| :---: | :---: | :---: |
-| Low confidence ceiling[cite: 1] | Pathological alignment[cite: 1] | **Optimal Multimodal Synergy**[cite: 1] |
-
----
-
-## 📝 Citation
-
-If you find our work useful in your research, please consider citing:
-
-```bibtex
 @inproceedings{jiang2026beyond,
   title={Beyond Unimodal Reliance: Multimodal Synergy for Training-Free Test-Time Adaptation},
-  author={Jiang, Guohao and Ma, Zhiheng and Ding, Chenhao and Dong, Songlin and He, Yuhang and Wang, Qiang and Gong, Yihong},
-  booktitle={Proceedings of the ACM International Conference on Multimedia (ACM MM)},
+  author={Jiang, Guohao and Ma, Zhiheng and Ding, Chenhao and Dong, SongLin and Wang, Qiang and He, Yuhang and Gong, Yihong},
+  booktitle={Proceedings of the 34th ACM International Conference on Multimedia},
   year={2026}
 }
 ```
-
----
-
-## 🙏 Acknowledgements
-This project is built upon [CLIP](https://github.com/openai/CLIP), [TDA](https://github.com/AdilbekKarmanov/TDA), and [BoostAdapter](https://github.com/ZhangTaolin/BoostAdapter)[cite: 1]. We thank the authors for their open-source contributions.
